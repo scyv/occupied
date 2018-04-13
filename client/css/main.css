@@ -7,6 +7,10 @@ footer {
     text-align: center;
 }
 
+.title {
+    font-size: 200%;
+}
+
 .breadcrumb {
     margin-top: 0;
     margin-bottom: 10px;
@@ -17,36 +21,20 @@ button {
     margin-right: 5px;
 }
 
-tfoot .sumRow {
-    background-color: #ffd6c6;
-}
-
 td.center, th.center {
     text-align: center;
 }
 
-tr.projectRow {
+tr.teamRow {
     cursor: pointer;
 }
 
-tr.sprintRow label, tr.sprintRow label input {
+tr.resourceRow label, tr.resourceRow label input {
     cursor: pointer;
     font-weight: normal;
 }
 
-.table-striped tr.sprintRow.selected {
+.table-striped tr.resourceRow.occupied {
     background: #ffd6c6;
-}
-
-.table-striped tr.sprintRow.for-calculation, .table-striped tr.availabilityRow.for-calculation {
-    background: #fffcc8;
-}
-
-.noSps {
-    color: red;
-}
-
-.selectionButtons button {
-    padding:0;
 }
 

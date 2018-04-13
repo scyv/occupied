@@ -9,6 +9,9 @@ Template.teams.helpers({
     },
     teams() {
         return Teams.find();
+    },
+    userName() {
+        return false;
     }
 });
 
@@ -23,11 +26,12 @@ Template.teams.events({
         $('#dlgEditTeam').modal('show');
         return false;
     },
-    'click .btnOpenTeams'() {
-        Router.go('teams', {teamId: this._id});
+    'click .btnOpenResources'() {
+        Router.go('resources', {teamId: this._id});
         return false;
     },
     'click tr.teamRow'() {
-        Router.go('teams', {teamId: this._id});
+        Router.go('resources', {teamId: this._id});
+        return false;
     }
 });
