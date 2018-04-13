@@ -1,0 +1,52 @@
+/* CSS declarations go here */
+body {
+    padding-top: 10px;
+}
+
+footer {
+    text-align: center;
+}
+
+.breadcrumb {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 120%;
+}
+
+button {
+    margin-right: 5px;
+}
+
+tfoot .sumRow {
+    background-color: #ffd6c6;
+}
+
+td.center, th.center {
+    text-align: center;
+}
+
+tr.projectRow {
+    cursor: pointer;
+}
+
+tr.sprintRow label, tr.sprintRow label input {
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.table-striped tr.sprintRow.selected {
+    background: #ffd6c6;
+}
+
+.table-striped tr.sprintRow.for-calculation, .table-striped tr.availabilityRow.for-calculation {
+    background: #fffcc8;
+}
+
+.noSps {
+    color: red;
+}
+
+.selectionButtons button {
+    padding:0;
+}
+

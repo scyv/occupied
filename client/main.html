@@ -1,0 +1,33 @@
+<head>
+    <title>occupied - Resource Management</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+</head>
+
+<body></body>
+
+<template name="layout">
+	<div class="container-fluid">
+		{{#if currentUser}}
+            <i class="glyphicon glyphicon-ok-circle" style="font-size: 40px;"></i>
+		<div class="row">
+			<div class="col-sm-12 col-md-12">
+				<button class="btn btn-default btn-logout btn-xs pull-right" title="Abmelden">Abmelden</button>
+				<p class="text-muted small">
+					Herzlich willkommen {{currentUser.profile.name}}!
+				</p>
+			</div>
+		</div>
+		{{/if}}
+		<div class="row">
+			<div class="col-sm-12 col-md-12">
+				{{> yield}}
+			</div>
+		</div>
+	</div>
+    <footer class="text-muted small"><hr>Version: 1.0.0 | Powered by <a href="https://meteor.com">Meteor</a> and <a href="https://github.com/scyv/occupied">Github</a></footer>
+    {{> dlgEditTeam}}
+    {{> dlgEditResource}}
+</template>
+
+<template name="loading">Laden...</template>

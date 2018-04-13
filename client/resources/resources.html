@@ -1,0 +1,50 @@
+<template name="resources">
+    <div class="breadcrumb">
+        {{#if currentUser}}
+            <a href="{{urlFor route='teams'}}">Teams</a> &raquo;
+        {{/if}}
+        {{selectedTeam.name}}
+    </div>
+    <div class="table-striped">
+        {{#if resourcesLoading}}
+            Laden...
+        {{else}}
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="3">
+                        <button class="btn btn-success btnCreateResource">Resource anlegen</button>
+                    </td>
+                </tr>
+                {{#each resources}}
+                    <tr class="resourceRow resource-{{_id}}">
+                        <td>
+                            {{name}}
+                        </td>
+                        <td class="center">
+                            STATUS
+                        </td>
+                        <td>
+                            <button class="btn btn-default btn-xs pull-right btnEditResource">Bearbeiten</button>
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td colspan="3">
+                            <div class="alert alert-warning">Es wurden noch keine Resourcen erstellt.</div>
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+            {{>shareLink}}
+        {{/if}}
+    </div>
+</template>
