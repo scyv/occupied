@@ -24,9 +24,10 @@ Template.dlgEditResource.helpers({
 Template.dlgEditResource.events({
     'click .btnSaveResource'() {
         const name = $('#resourceNameInput').val();
+        const mattermostUrl = $('#mattermostHookUrlInput').val();
         const teamId = Session.get(SessionProps.SELECTED_TEAM);
 
-        const obj = {name, teamId};
+        const obj = {name, mattermostUrl, teamId};
 
         if (this._id) {
             Meteor.call("updateResource", this._id, obj);
