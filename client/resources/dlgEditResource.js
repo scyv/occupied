@@ -36,6 +36,12 @@ Template.dlgEditResource.events({
         }
         $('#dlgEditResource').modal('hide');
     },
+    'click .btnForceRelease'() {
+        if (confirm("Wirklich freigeben?")) {
+            Meteor.call('forceRelease', this._id);
+            $('#dlgEditResource').modal('hide');
+        }
+    },
     'click .btnDelete'() {
         if (confirm("Wirklich löschen?")) {
             Meteor.call('removeResource', this._id);

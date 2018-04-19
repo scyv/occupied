@@ -21,6 +21,9 @@ function sendMatterMostMessage(resource, occupiedBy, action) {
             case "RELEASED":
                 mmApi.send(occupiedBy + " hat " + resource.name + " freigegeben");
                 break;
+            case "RELEASE_FORCED":
+                mmApi.send(resource.name + " wurde freigegeben");
+                break;
         }
     }
 }
@@ -124,6 +127,18 @@ Meteor.methods({
                 console.log("RELEASED Resource", resourceId, resource.name, "from", resource.occupiedBy);
             }
         }
-
+    },
+    forceRelease(resourceId) {
+        if (this.userId) {
+            check(resourceId, String);
+            const resource = Resources.findOne({_id: resourceId});
+            if (resource && resource.occupiedBy) {
+                Resources.update({_id: resourceId}, {$set: {occupiedBy: null, occupiedByUser: null}});
+                if (!this.isSimulation) {
+                    sendMatterMostMessage(resource, resource.occupiedBy, "RELEASE_FORCED");
+                }
+                console.log("RELEASED Resource", resourceId, resource.name, "from", resource.occupiedBy);
+            }
+        }
     }
 });
