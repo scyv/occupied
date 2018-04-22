@@ -12,7 +12,7 @@ function checkUserLoggedIn(ctx) {
 }
 
 function sendMatterMostMessage(resource, occupiedBy, action) {
-    if (resource.mattermostUrl) {
+    if (resource.mattermostUrl && MattermostApi) {
         const mmApi = new MattermostApi("OccupiedBot", resource.mattermostUrl);
         switch (action) {
             case "OCCUPIED":
