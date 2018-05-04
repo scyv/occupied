@@ -28,6 +28,24 @@ function sendMatterMostMessage(resource, occupiedBy, action) {
     }
 }
 
+function releaseResource(resource) {
+    Resources.update({_id: resource._id}, {
+        $set: {
+            occupiedBy: null,
+            occupiedByUser: null,
+            releaseRequestedBy: null,
+            releaseRequestedAt: null,
+            releaseRequestNotified: false
+        }
+    });
+
+    if (!this.isSimulation) {
+        sendMatterMostMessage(resource, resource.occupiedBy, "RELEASED");
+    }
+
+    console.log("RELEASED Resource", resource._id, resource.name, "from", resource.occupiedBy);
+}
+
 Meteor.methods({
     createTeam(name) {
         checkUserLoggedIn(this);
@@ -118,27 +136,69 @@ Meteor.methods({
             }
 
             if (removeAllowed) {
-                Resources.update({_id: resourceId}, {$set: {occupiedBy: null, occupiedByUser: null}});
-
-                if (!this.isSimulation) {
-                    sendMatterMostMessage(resource, resource.occupiedBy, "RELEASED");
-                }
-
-                console.log("RELEASED Resource", resourceId, resource.name, "from", resource.occupiedBy);
+                releaseResource(resource);
             }
         }
     },
     forceRelease(resourceId) {
-        if (this.userId) {
-            check(resourceId, String);
-            const resource = Resources.findOne({_id: resourceId});
-            if (resource && resource.occupiedBy) {
-                Resources.update({_id: resourceId}, {$set: {occupiedBy: null, occupiedByUser: null}});
-                if (!this.isSimulation) {
-                    sendMatterMostMessage(resource, resource.occupiedBy, "RELEASE_FORCED");
-                }
-                console.log("RELEASED Resource", resourceId, resource.name, "from", resource.occupiedBy);
+        checkUserLoggedIn(this);
+
+        check(resourceId, String);
+        const resource = Resources.findOne({_id: resourceId});
+        if (resource && resource.occupiedBy) {
+            Resources.update({_id: resourceId}, {$set: {occupiedBy: null, occupiedByUser: null}});
+            if (!this.isSimulation) {
+                sendMatterMostMessage(resource, resource.occupiedBy, "RELEASE_FORCED");
             }
+            console.log("RELEASED Resource", resourceId, resource.name, "from", resource.occupiedBy);
+        }
+    },
+    requestRelease(resourceId, user) {
+        check(resourceId, String);
+        check(user, String);
+        const resource = Resources.findOne({_id: resourceId});
+        if (resource && resource.occupiedBy) {
+            Resources.update({_id: resourceId}, {
+                $set: {
+                    releaseRequestedBy: user,
+                    releaseRequestedAt: new Date()
+                }
+            });
+            console.log("Release requested for resource", resourceId, resource.name, "by", user);
+        }
+    },
+    setReleaseRequestNotified(resourceId, user) {
+        check(resourceId, String);
+        check(user, String);
+        const resource = Resources.findOne({_id: resourceId});
+        if (resource && resource.occupiedBy && resource.occupiedBy === user) {
+            Resources.update({_id: resourceId}, {
+                $set: {
+                    releaseRequestNotified: true
+                }
+            });
+            if (!this.isSimulation) {
+                Meteor.setTimeout(()=> {
+                    const r = Resources.findOne({_id: resourceId});
+                    if (r.releaseRequestNotified) {
+                        releaseResource(resource);
+                    }
+                }, 60000);
+            }
+        }
+    },
+    denyRelease(resourceId, user) {
+        check(resourceId, String);
+        check(user, String);
+        const resource = Resources.findOne({_id: resourceId});
+        if (resource && resource.occupiedBy && resource.occupiedBy === user) {
+            Resources.update({_id: resourceId}, {
+                $set: {
+                    releaseRequestedBy: null,
+                    releaseRequestedAt: null,
+                    releaseRequestNotified: false
+                }
+            });
         }
     }
 });

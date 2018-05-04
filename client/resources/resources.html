@@ -15,7 +15,6 @@
                     <tr>
                         <th>Name</th>
                         <th class="center">Status</th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -23,6 +22,7 @@
                         <tr class="resourceRow resource-{{_id}} {{state}}">
                             <td>
                                 {{name}}
+                                <button class="btn btn-link btn-xs btnEditResource">Bearbeiten</button>
                             </td>
                             <td class="center">
                                 {{#if occupiedBy}}
@@ -31,17 +31,36 @@
                                     {{else}}
                                         Belegt von {{occupiedBy}}
                                     {{/if}}
+                                    <br>
+                                    {{#if occupiedByMe}}
+                                    {{else}}
+                                        {{#if releaseRequested}}
+                                        {{else}}
+                                            <button class="btn btn-sm btn-link btnRequestRelease"
+                                                    title="Freigabe anfragen">
+                                                <i class="glyphicon glyphicon-bullhorn"></i>
+                                                Freigabe anfragen
+                                            </button>
+                                        {{/if}}
+                                    {{/if}}
+                                    {{#if releaseRequested}}
+                                        <span class="text-muted">Angefragt von {{releaseRequestedBy}}</span>
+                                        {{#if occupiedByMe}}
+                                            <button class="btn btn-sm btn-link btnDenyRelease"
+                                                    title="Freigabe ablehnen">
+                                                <i class="glyphicon glyphicon-ban-circle"></i>
+                                                Freigabe ablehnen <span class="time-left-{{_id}}"></span>
+                                            </button>
+                                        {{/if}}
+                                    {{/if}}
                                 {{else}}
-                                    <button class="btn btn-xs btn-danger btnOccupy">Jetzt Belegen</button>
+                                        <button class="btn btn-xs btn-danger btnOccupy">Jetzt Belegen</button>
                                 {{/if}}
-                            </td>
-                            <td>
-                                <button class="btn btn-default btn-xs pull-right btnEditResource">Bearbeiten</button>
                             </td>
                         </tr>
                     {{else}}
                         <tr>
-                            <td colspan="3">
+                            <td colspan="2">
                                 <div class="alert alert-warning">Es wurden noch keine Ressourcen erstellt.</div>
                             </td>
                         </tr>
