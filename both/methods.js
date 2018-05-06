@@ -164,6 +164,14 @@ Meteor.methods({
                     releaseRequestedAt: new Date()
                 }
             });
+            if (!this.isSimulation) {
+                Meteor.setTimeout(()=> {
+                    const r = Resources.findOne({_id: resourceId});
+                    if (r.releaseRequestedAt) {
+                        releaseResource(r);
+                    }
+                }, 60000);
+            }
             console.log("Release requested for resource", resourceId, resource.name, "by", user);
         }
     },
@@ -177,21 +185,14 @@ Meteor.methods({
                     releaseRequestNotified: true
                 }
             });
-            if (!this.isSimulation) {
-                Meteor.setTimeout(()=> {
-                    const r = Resources.findOne({_id: resourceId});
-                    if (r.releaseRequestNotified) {
-                        releaseResource(resource);
-                    }
-                }, 60000);
-            }
         }
     },
     denyRelease(resourceId, user) {
         check(resourceId, String);
         check(user, String);
         const resource = Resources.findOne({_id: resourceId});
-        if (resource && resource.occupiedBy && resource.occupiedBy === user) {
+        if (resource && resource.occupiedBy
+             && (resource.occupiedBy === user) || resource.releaseRequestedBy === user) {
             Resources.update({_id: resourceId}, {
                 $set: {
                     releaseRequestedBy: null,
