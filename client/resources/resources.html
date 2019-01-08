@@ -52,6 +52,13 @@
                                                 Freigabe ablehnen <span class="time-left-{{_id}}"></span>
                                             </button>
                                         {{/if}}
+                                        {{#if requestedByMe}}
+                                            <button class="btn btn-sm btn-link btnCancelRequest"
+                                                    title="Freigabeanforderung abbrechen">
+                                                <i class="glyphicon glyphicon-ban-circle"></i>
+                                                Abbrechen <span class="time-left-{{_id}}"></span>
+                                            </button>
+                                        {{/if}}
                                     {{/if}}
                                 {{else}}
                                         <button class="btn btn-xs btn-danger btnOccupy">Jetzt Belegen</button>

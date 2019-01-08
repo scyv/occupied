@@ -13,6 +13,22 @@ function getUserName() {
     return ClientStorage.get("userName");
 }
 
+function showCountDown(requestedAt, resourceId) {
+    const countDownDisplay = ()=> {
+        const now = new Date();
+        const elem = $('.time-left-' + resourceId)[0];
+        if (elem) {
+            const timeLeft = 60 - (now - requestedAt)/1000;
+            elem.textContent = "(" + timeLeft.toFixed(0) + "s)";
+            if (timeLeft > 0) {
+                Meteor.setTimeout(countDownDisplay, 999);
+            }
+        }
+    };
+    Meteor.setTimeout(countDownDisplay, 1000);
+}
+
+
 Template.resources.helpers({
     selectedTeam() {
         return Teams.findOne(Session.get(SessionProps.SELECTED_TEAM));
@@ -36,29 +52,21 @@ Template.resources.helpers({
     occupiedByMe() {
         return this.occupiedBy === getUserName();
     },
+    requestedByMe() {
+        return this.releaseRequestedBy === getUserName();
+    },
     userName() {
         return getUserName();
     },
     releaseRequested() {
-        const notified = this.releaseRequestNotified;
         const requestedAt = this.releaseRequestedAt;
+        const notified = this.releaseRequestNotified;
         if (requestedAt && !notified
             && this.occupiedBy === getUserName()) {
 
             Notifications.notify("Freigabe Angefragt", this.releaseRequestedBy + " hat die Freigabe für " + this.name + " angefragt!");
 
-            let timeLeft = 60;
-            const countDownDisplay = ()=> {
-                const elem = $('.time-left-' + this._id)[0];
-                if (elem) {
-                    timeLeft--;
-                    elem.textContent = "(" + timeLeft + "s)";
-                    if (timeLeft > 0) {
-                        Meteor.setTimeout(countDownDisplay, 999);
-                    }
-                }
-            };
-            Meteor.setTimeout(countDownDisplay, 1000);
+            showCountDown(requestedAt, this._id);
             Meteor.call("setReleaseRequestNotified", this._id, getUserName());
         }
 
@@ -88,6 +96,10 @@ Template.resources.events({
     },
     "click .btnRequestRelease"() {
         Meteor.call("requestRelease", this._id, getUserName());
+        showCountDown(new Date(), this._id);
+    },
+    "click .btnCancelRequest"() {
+        Meteor.call("denyRelease", this._id, getUserName());
     },
     "click .btnDenyRelease"() {
         Meteor.call("denyRelease", this._id, getUserName());
